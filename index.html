@@ -17,6 +17,9 @@
     #bar { width: 260px; height: 10px; border: 2px solid #ffd933; padding: 2px; }
     #fill { width: 0; height: 100%; background: #ffd933; }
     #note { font-size: 12px; letter-spacing: 2px; color: #9aa39c; }
+    #coin { display: none; font-size: 22px; font-weight: bold; letter-spacing: 5px; color: #ffd933; animation: blink 1s steps(1) infinite; }
+    #coin small { display: block; margin-top: 10px; font-size: 12px; letter-spacing: 3px; color: #f2efe6; text-align: center; }
+    @keyframes blink { 50% { opacity: 0; } }
     #error { display: none; position: fixed; left: 50%; top: 20px; transform: translateX(-50%); background: #d8352a; color: #fff;
              font-family: "Courier New", monospace; padding: 10px 16px; letter-spacing: 1px; z-index: 2; }
   </style>
@@ -28,6 +31,7 @@
     <div id="title">VOYAGE</div>
     <div id="bar"><div id="fill"></div></div>
     <div id="note">BEST WITH A KEYBOARD OR A GAMEPAD</div>
+    <div id="coin">INSERT COIN<small>PRESS ANY KEY OR CLICK</small></div>
   </div>
   <div id="error"></div>
   <script>
@@ -52,9 +56,23 @@
     script.onload = function () {
       createUnityInstance(canvas, config, function (p) {
         document.getElementById("fill").style.width = (100 * p) + "%";
-      }).then(function () {
-        document.getElementById("loading").style.display = "none";
-        canvas.focus();
+      }).then(function (unity) {
+        // il browser fa partire l'audio solo dopo un gesto: lo chiediamo noi, da sala giochi
+        document.getElementById("bar").style.display = "none";
+        document.getElementById("note").style.display = "none";
+        document.getElementById("coin").style.display = "block";
+        var start = function (e) {
+          // il tasto della moneta non arriva al gioco (non deve scegliere PLAY da solo); l'audio lo sblocchiamo qui
+          if (e) { e.preventDefault(); e.stopPropagation(); }
+          try { if (window.WEBAudio && WEBAudio.audioContext && WEBAudio.audioContext.state !== "running") WEBAudio.audioContext.resume(); } catch (x) {}
+          try { unity.SendMessage("Voyage", "OnCoin"); } catch (x) {} // il brano del menu parte adesso, da capo
+          document.getElementById("loading").style.display = "none";
+          window.removeEventListener("keydown", start, true);
+          window.removeEventListener("pointerdown", start, true);
+          canvas.focus();
+        };
+        window.addEventListener("keydown", start, true);
+        window.addEventListener("pointerdown", start, true);
       }).catch(function (m) { config.showBanner(String(m), "error"); });
     };
     document.body.appendChild(script);
