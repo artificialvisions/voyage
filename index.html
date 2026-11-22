@@ -65,7 +65,19 @@
           // il tasto della moneta non arriva al gioco (non deve scegliere PLAY da solo); l'audio lo sblocchiamo qui
           if (e) { e.preventDefault(); e.stopPropagation(); }
           try { if (window.WEBAudio && WEBAudio.audioContext && WEBAudio.audioContext.state !== "running") WEBAudio.audioContext.resume(); } catch (x) {}
-          try { unity.SendMessage("Voyage", "OnCoin"); } catch (x) {} // il brano del menu parte adesso, da capo
+          // la monetina: due note da sala giochi, suonate dalla pagina; sblocca l'audio e poi parte il brano del menu
+          try {
+            var ac = new (window.AudioContext || window.webkitAudioContext)(), t0 = ac.currentTime + 0.02;
+            [[988, 0, 0.07], [1319, 0.07, 0.35]].forEach(function (n) {
+              var o = ac.createOscillator(), g = ac.createGain();
+              o.type = "square"; o.frequency.value = n[0];
+              g.gain.setValueAtTime(0.0001, t0 + n[1]);
+              g.gain.exponentialRampToValueAtTime(0.12, t0 + n[1] + 0.01);
+              g.gain.exponentialRampToValueAtTime(0.0001, t0 + n[1] + n[2]);
+              o.connect(g); g.connect(ac.destination); o.start(t0 + n[1]); o.stop(t0 + n[1] + n[2] + 0.02);
+            });
+          } catch (x) {}
+          setTimeout(function () { try { unity.SendMessage("Voyage", "OnCoin"); } catch (x) {} }, 450); // il brano del menu, da capo
           document.getElementById("loading").style.display = "none";
           window.removeEventListener("keydown", start, true);
           window.removeEventListener("pointerdown", start, true);
