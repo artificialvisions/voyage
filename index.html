@@ -77,6 +77,7 @@
               o.connect(g); g.connect(ac.destination); o.start(t0 + n[1]); o.stop(t0 + n[1] + n[2] + 0.02);
             });
           } catch (x) {}
+          try { unity.SendMessage("Voyage", "OnCredit"); } catch (x) {} // il gettone vale tre crediti
           setTimeout(function () { try { unity.SendMessage("Voyage", "OnCoin"); } catch (x) {} }, 450); // il brano del menu, da capo
           document.getElementById("loading").style.display = "none";
           window.removeEventListener("keydown", start, true);
