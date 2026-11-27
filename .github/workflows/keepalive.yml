@@ -1,0 +1,18 @@
+# Ogni 4 giorni scrive un segno di vita nel database della hall of fame (Supabase "voyage"):
+# un progetto Supabase gratuito senza attività per 7 giorni va in pausa.
+# La chiave è quella pubblica (anon), la stessa che c'è già nel gioco: può solo chiamare hall_keepalive.
+name: Hall of fame keepalive
+on:
+  schedule:
+    - cron: "17 6 */4 * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          curl -sf -X POST "https://ciiwymdenvglukhsaqph.supabase.co/rest/v1/rpc/hall_keepalive" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -d '{}'
+        env:
+          KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpaXd5bWRlbnZnbHVraHNhcXBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5Njk4NTUsImV4cCI6MjA2NTU0NTg1NX0.MnZo8oYbZJUHQtS7h0SZ04dnZ0t64P_rfpEmNXEhSYY
