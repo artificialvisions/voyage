@@ -38,9 +38,9 @@
     var canvas = document.getElementById("game");
     var buildUrl = "Build";
     var config = {
-      dataUrl: buildUrl + "/015011955e150d6073f0fb9d893bc7af.data.unityweb",
+      dataUrl: buildUrl + "/0597d052fc5a6bc61243e1c0d9241b7f.data.unityweb",
       frameworkUrl: buildUrl + "/d25ba467e7a56ff6ad92506c6c01d2e2.framework.js.unityweb",
-      codeUrl: buildUrl + "/067846990531dc927f3a38bc6df0ad3f.wasm.unityweb",
+      codeUrl: buildUrl + "/48e3d7d606a9ad74f2289b38c5fe793e.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "VS Studio",
       productName: "Voyage",
@@ -52,7 +52,7 @@
       }
     };
     var script = document.createElement("script");
-    script.src = buildUrl + "/93de6325254738f5f3270cac3bac0e1a.loader.js";
+    script.src = buildUrl + "/2d993a728d9c27c0740d4e54df5282f9.loader.js";
     script.onload = function () {
       createUnityInstance(canvas, config, function (p) {
         document.getElementById("fill").style.width = (100 * p) + "%";
